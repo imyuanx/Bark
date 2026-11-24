@@ -20,7 +20,11 @@ permissions:
 
 jobs:
   unsigned-macos:
-    runs-on: macos-latest
+    # macos-latest is the standard arm64 image. That pool cancelled this job
+    # before a runner was assigned. macos-15-intel is a standard Intel label
+    # for public repositories, not a larger runner.
+    # https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+    runs-on: macos-15-intel
     steps:
       - name: Checkout
         uses: actions/checkout@v5
