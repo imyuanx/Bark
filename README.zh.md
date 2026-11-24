@@ -14,6 +14,10 @@ Bark 支持 iOS 通知的多种高级功能：推送分组、自定义图标和�
 ## 使用文档
 [https://bark.day.app](https://bark.day.app)
 
+## macOS 菜单栏
+
+独立的原生 macOS 首版在 [BarkMac/README.md](BarkMac/README.md)。它不改 iOS 和 watchOS 的 target、bundle 或签名，也不会向推送服务器注册。
+
 ## 问题反馈
 [Bark反馈群](https://t.me/joinchat/OsCbLzovUAE0YjY1)
 

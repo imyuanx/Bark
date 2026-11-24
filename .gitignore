@@ -12,3 +12,5 @@ Pods/
 xcuserdata
 buildServer.json
 *.p8
+BarkMac/.build/
+BarkMac/Signing/Local.xcconfig

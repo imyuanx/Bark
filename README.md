@@ -12,6 +12,10 @@ Additionally, Bark supports self-hosted servers and offers encrypted push notifi
 ## Documentation
 [https://bark.day.app/#/en-us/](https://bark.day.app/#/en-us/)
 
+## macOS menu bar
+
+A separate unsigned native macOS app is in [BarkMac/README.md](BarkMac/README.md). It does not change the iOS or watchOS targets, their bundle identifiers, or their signing, and it does not register with a push server.
+
 ## Feedback
 [Telegram](https://t.me/joinchat/OsCbLzovUAE0YjY1)
 
