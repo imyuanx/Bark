@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AC000000000000000000002F /* APNsTokenClient.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000013 /* APNsTokenClient.swift */;
+		};
+		AC0000000000000000000030 /* AppDelegate.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000014 /* AppDelegate.swift */;
+		};
+		AC0000000000000000000031 /* AppModel.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000015 /* AppModel.swift */;
+		};
+		AC0000000000000000000032 /* LiveBarkRegisterTransport.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000016 /* LiveBarkRegisterTransport.swift */;
+		};
+		AC0000000000000000000033 /* MacNotificationSDKProbe.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000017 /* MacNotificationSDKProbe.swift */;
+		};
+		AC0000000000000000000034 /* MainWindowView.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000018 /* MainWindowView.swift */;
+		};
+		AC0000000000000000000035 /* SettingsWindowView.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000019 /* SettingsWindowView.swift */;
+		};
+		AC0000000000000000000036 /* StatusMenuController.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC000000000000000000001A /* StatusMenuController.swift */;
+		};
+		AC0000000000000000000037 /* WindowPresenter.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC000000000000000000001B /* WindowPresenter.swift */;
+		};
+		AC0000000000000000000038 /* APNsTokenPolicy.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC000000000000000000001D /* APNsTokenPolicy.swift */;
+		};
+		AC0000000000000000000039 /* AddressDraft.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC000000000000000000001E /* AddressDraft.swift */;
+		};
+		AC000000000000000000003A /* AppStorageKeys.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC000000000000000000001F /* AppStorageKeys.swift */;
+		};
+		AC000000000000000000003B /* DeliveryStages.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000020 /* DeliveryStages.swift */;
+		};
+		AC000000000000000000003C /* DockPolicy.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000021 /* DockPolicy.swift */;
+		};
+		AC000000000000000000003D /* KeyIsolation.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000022 /* KeyIsolation.swift */;
+		};
+		AC000000000000000000003E /* NotificationPermissionCopy.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000023 /* NotificationPermissionCopy.swift */;
+		};
+		AC000000000000000000003F /* PrivacySummary.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000024 /* PrivacySummary.swift */;
+		};
+		AC0000000000000000000040 /* PushLink.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000025 /* PushLink.swift */;
+		};
+		AC0000000000000000000041 /* RegistrationGate.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000026 /* RegistrationGate.swift */;
+		};
+		AC0000000000000000000042 /* RegistrationPolicy.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000027 /* RegistrationPolicy.swift */;
+		};
+		AC0000000000000000000043 /* WindowPolicy.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AC0000000000000000000028 /* WindowPolicy.swift */;
+		};
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AC0000000000000000000003 /* BarkMac.app */ = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = BarkMac.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AC0000000000000000000013 /* APNsTokenClient.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = APNsTokenClient.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000014 /* AppDelegate.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = AppDelegate.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000015 /* AppModel.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = AppModel.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000016 /* LiveBarkRegisterTransport.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = LiveBarkRegisterTransport.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000017 /* MacNotificationSDKProbe.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = MacNotificationSDKProbe.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000018 /* MainWindowView.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = MainWindowView.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000019 /* SettingsWindowView.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = SettingsWindowView.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000001A /* StatusMenuController.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = StatusMenuController.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000001B /* WindowPresenter.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = WindowPresenter.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000001D /* APNsTokenPolicy.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = APNsTokenPolicy.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000001E /* AddressDraft.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = AddressDraft.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000001F /* AppStorageKeys.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = AppStorageKeys.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000020 /* DeliveryStages.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = DeliveryStages.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000021 /* DockPolicy.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = DockPolicy.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000022 /* KeyIsolation.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = KeyIsolation.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000023 /* NotificationPermissionCopy.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = NotificationPermissionCopy.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000024 /* PrivacySummary.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = PrivacySummary.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000025 /* PushLink.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = PushLink.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000026 /* RegistrationGate.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = RegistrationGate.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000027 /* RegistrationPolicy.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = RegistrationPolicy.swift;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000028 /* WindowPolicy.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = WindowPolicy.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000001C /* Info.plist */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			path = Info.plist;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000029 /* BarkHTTPShape.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BarkHTTPShape.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000002A /* Local.xcconfig.example */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = Local.xcconfig.example;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000002B /* Push.entitlements.example */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = Push.entitlements.example;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000002C /* Unsigned.xcconfig */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.xcconfig;
+			path = Unsigned.xcconfig;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000002D /* Package.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = Package.swift;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000002E /* README.md */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = net.daringfireball.markdown;
+			path = README.md;
+			sourceTree = "<group>";
+		};
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AC0000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AC000000000000000000000D = {
+			isa = PBXGroup;
+			children = (
+				AC000000000000000000000E /* App */,
+				AC0000000000000000000010 /* Sources */,
+				AC0000000000000000000011 /* Signing */,
+				AC000000000000000000002D /* Package.swift */,
+				AC000000000000000000002E /* README.md */,
+				AC0000000000000000000012 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AC000000000000000000000E /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AC0000000000000000000013 /* APNsTokenClient.swift */,
+				AC0000000000000000000014 /* AppDelegate.swift */,
+				AC0000000000000000000015 /* AppModel.swift */,
+				AC0000000000000000000016 /* LiveBarkRegisterTransport.swift */,
+				AC0000000000000000000017 /* MacNotificationSDKProbe.swift */,
+				AC0000000000000000000018 /* MainWindowView.swift */,
+				AC0000000000000000000019 /* SettingsWindowView.swift */,
+				AC000000000000000000001A /* StatusMenuController.swift */,
+				AC000000000000000000001B /* WindowPresenter.swift */,
+				AC000000000000000000001C /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000010 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				AC000000000000000000000F /* BarkMacCore */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000000F /* BarkMacCore */ = {
+			isa = PBXGroup;
+			children = (
+				AC000000000000000000001D /* APNsTokenPolicy.swift */,
+				AC000000000000000000001E /* AddressDraft.swift */,
+				AC000000000000000000001F /* AppStorageKeys.swift */,
+				AC0000000000000000000020 /* DeliveryStages.swift */,
+				AC0000000000000000000021 /* DockPolicy.swift */,
+				AC0000000000000000000022 /* KeyIsolation.swift */,
+				AC0000000000000000000023 /* NotificationPermissionCopy.swift */,
+				AC0000000000000000000024 /* PrivacySummary.swift */,
+				AC0000000000000000000025 /* PushLink.swift */,
+				AC0000000000000000000026 /* RegistrationGate.swift */,
+				AC0000000000000000000027 /* RegistrationPolicy.swift */,
+				AC0000000000000000000028 /* WindowPolicy.swift */,
+				AC0000000000000000000029 /* BarkHTTPShape.swift */,
+			);
+			path = BarkMacCore;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000011 /* Signing */ = {
+			isa = PBXGroup;
+			children = (
+				AC000000000000000000002A /* Local.xcconfig.example */,
+				AC000000000000000000002B /* Push.entitlements.example */,
+				AC000000000000000000002C /* Unsigned.xcconfig */,
+			);
+			path = Signing;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000012 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AC0000000000000000000003 /* BarkMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AC0000000000000000000002 /* BarkMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AC0000000000000000000007 /* Build configuration list for PBXNativeTarget "BarkMac" */;
+			buildPhases = (
+				AC0000000000000000000004 /* Sources */,
+				AC0000000000000000000005 /* Frameworks */,
+				AC0000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BarkMac;
+			productName = BarkMac;
+			productReference = AC0000000000000000000003 /* BarkMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AC0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					AC0000000000000000000002 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = AC0000000000000000000008 /* Build configuration list for PBXProject "BarkMac" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hans",
+			);
+			mainGroup = AC000000000000000000000D;
+			productRefGroup = AC0000000000000000000012 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AC0000000000000000000002 /* BarkMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AC0000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AC0000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC000000000000000000002F /* APNsTokenClient.swift in Sources */,
+				AC0000000000000000000030 /* AppDelegate.swift in Sources */,
+				AC0000000000000000000031 /* AppModel.swift in Sources */,
+				AC0000000000000000000032 /* LiveBarkRegisterTransport.swift in Sources */,
+				AC0000000000000000000033 /* MacNotificationSDKProbe.swift in Sources */,
+				AC0000000000000000000034 /* MainWindowView.swift in Sources */,
+				AC0000000000000000000035 /* SettingsWindowView.swift in Sources */,
+				AC0000000000000000000036 /* StatusMenuController.swift in Sources */,
+				AC0000000000000000000037 /* WindowPresenter.swift in Sources */,
+				AC0000000000000000000038 /* APNsTokenPolicy.swift in Sources */,
+				AC0000000000000000000039 /* AddressDraft.swift in Sources */,
+				AC000000000000000000003A /* AppStorageKeys.swift in Sources */,
+				AC000000000000000000003B /* DeliveryStages.swift in Sources */,
+				AC000000000000000000003C /* DockPolicy.swift in Sources */,
+				AC000000000000000000003D /* KeyIsolation.swift in Sources */,
+				AC000000000000000000003E /* NotificationPermissionCopy.swift in Sources */,
+				AC000000000000000000003F /* PrivacySummary.swift in Sources */,
+				AC0000000000000000000040 /* PushLink.swift in Sources */,
+				AC0000000000000000000041 /* RegistrationGate.swift in Sources */,
+				AC0000000000000000000042 /* RegistrationPolicy.swift in Sources */,
+				AC0000000000000000000043 /* WindowPolicy.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AC000000000000000000000B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_NS_ASSERTIONS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AC000000000000000000000C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		AC0000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC000000000000000000002C /* Unsigned.xcconfig */;
+			buildSettings = {
+
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_NAME = BarkMac;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AC000000000000000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC000000000000000000002C /* Unsigned.xcconfig */;
+			buildSettings = {
+
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_NAME = BarkMac;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AC0000000000000000000008 /* Build configuration list for PBXProject "BarkMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC000000000000000000000B /* Debug */,
+				AC000000000000000000000C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AC0000000000000000000007 /* Build configuration list for PBXNativeTarget "BarkMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC0000000000000000000009 /* Debug */,
+				AC000000000000000000000A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AC0000000000000000000001 /* Project object */;
+}

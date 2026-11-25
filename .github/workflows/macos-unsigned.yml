@@ -1,0 +1,45 @@
+name: macOS unsigned
+
+# Compiles the native Mac app and runs BarkMacCore tests.
+# No secrets, no match, no TestFlight, and no production notification.
+
+on:
+  pull_request:
+    paths:
+      - "BarkMac/**"
+      - ".github/workflows/macos-unsigned.yml"
+  push:
+    branches:
+      - master
+    paths:
+      - "BarkMac/**"
+      - ".github/workflows/macos-unsigned.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  unsigned-macos:
+    # macos-latest is the standard arm64 image. That pool cancelled this job
+    # before a runner was assigned. macos-15-intel is a standard Intel label
+    # for public repositories, not a larger runner.
+    # https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+    runs-on: macos-15-intel
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Test and build without signing
+        run: bash BarkMac/scripts/unsigned-build.sh
+
+      - name: Upload unsigned package
+        uses: actions/upload-artifact@v4
+        with:
+          name: BarkMac-unsigned-local.barkmac.unsigned
+          path: BarkMac/build/BarkMac-unsigned-local.barkmac.unsigned.zip
+          if-no-files-found: error
