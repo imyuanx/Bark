@@ -2,7 +2,7 @@ import Foundation
 
 /// Documents the existing Bark register query. Nothing in the app calls this.
 enum BarkHTTPShape {
-    static let registerPath = "/register"
+    static let registerPath = RegistrationPolicy.registerPath
 
     static func registerQuery(deviceToken: String, existingKey: String?) -> [String: String] {
         var query = [

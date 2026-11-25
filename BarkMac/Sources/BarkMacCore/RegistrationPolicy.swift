@@ -19,15 +19,16 @@ struct RegistrationDecision: Equatable {
         case .officialServer:
             return "注册：已禁用。不会向官方服务器发送注册。"
         case .macosDeviceTypeNotAccepted:
-            return "注册：已禁用。需要尚未提供的隔离后端（device_type=macos），当前不会发送请求。"
+            return "地址：已保存。地址本身不能证明后端接受 device_type=macos。"
         }
     }
 }
 
 enum RegistrationPolicy {
     static let deviceType = "macos"
-    /// The app must not perform HTTP registration while this is false.
-    static let networkRegistrationEnabled = false
+    static let registerPath = "/register"
+    /// Launch never sends /register. A later explicit action still has to pass RegistrationGate.
+    static let launchesRegistrationAutomatically = false
     /// Compared as a host string only. The app does not contact this host.
     static let officialHosts: Set<String> = ["api.day.app"]
 

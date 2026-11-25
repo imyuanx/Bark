@@ -18,10 +18,12 @@ struct MainWindowView: View {
 
                 GroupBox {
                     VStack(alignment: .leading, spacing: 8) {
-                        statusLine(NotificationPermissionCopy.permissionLine(statusName: model.permissionText))
-                        statusLine(model.capability.serverLine)
+                        statusLine(model.stages.permissionLine)
+                        statusLine(model.stages.apnsLine)
+                        statusLine(model.stages.backendLine)
+                        statusLine(model.stages.deliveryLine)
                         statusLine(model.registration.statusLine)
-                        statusLine(CapabilityStatement.apnsLine)
+                        statusLine(MacNotificationSDKProbe.summary)
                         statusLine(model.staysRunningLabel)
                         statusLine(model.dockLabel)
                         if !model.statusNote.isEmpty {
@@ -36,7 +38,7 @@ struct MainWindowView: View {
 
                 GroupBox {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("询问系统是否允许本应用显示通知。允许之后仍然是未向 APNs 注册、未验证。")
+                        Text("这一步只问系统能不能显示通知。它不向 APNs 要 token，也不向服务器注册。")
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                         Button("向系统询问通知权限", action: requestPermission)
@@ -79,8 +81,47 @@ struct MainWindowView: View {
 
                 GroupBox {
                     VStack(alignment: .leading, spacing: 8) {
+                        Text("四个开关默认都是关。关着的时候不会调用 registerForRemoteNotifications，也不会发送 /register。官方地址即使打开也会被拒绝。")
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Toggle("我已用自己的团队为新的 Mac bundle 打开 Push", isOn: Binding(
+                            get: { model.signingAcknowledged },
+                            set: { model.setSigningAcknowledged($0) }
+                        ))
+                        Toggle("允许向 APNs 请求 token", isOn: Binding(
+                            get: { model.userEnabledAPNs },
+                            set: { model.setUserEnabledAPNs($0) }
+                        ))
+                        Toggle("这个地址是隔离后端，接受 device_type=macos", isOn: Binding(
+                            get: { model.backendMarkedCompatible },
+                            set: { model.setBackendMarkedCompatible($0) }
+                        ))
+                        Toggle("允许向该后端注册", isOn: Binding(
+                            get: { model.userEnabledBackend },
+                            set: { model.setUserEnabledBackend($0) }
+                        ))
+                        HStack {
+                            Button("请求 APNs token") {
+                                model.requestAPNsToken()
+                            }
+                            Button("执行后端注册") {
+                                model.runBackendRegistration()
+                            }
+                        }
+                        Text("注册成功只会把返回的新 key 写进本应用自己的槽位。没有独立 key 时，请求里不带 key，避免覆盖已有设备。")
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(4)
+                } label: {
+                    Text("APNs 与后端")
+                }
+
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("尚无本地消息。")
-                        Text("首版没有 Notification Service Extension，应用启动时也不接收远程通知，因此不能把后台收到的推送写入历史。加密推送的解密一并延后。")
+                        Text("这个构建没有安装 Notification Service Extension。SDK 探针只证明类能编译，不证明系统会调用扩展，也不能把远程通知写入历史。")
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }

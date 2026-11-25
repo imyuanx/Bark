@@ -9,6 +9,13 @@ final class AppModel: ObservableObject {
     @Published var permissionText: String
     @Published var statusNote: String
     @Published var addressError: String?
+    @Published var userEnabledBackend: Bool
+    @Published var backendMarkedCompatible: Bool
+    @Published var userEnabledAPNs: Bool
+    @Published var signingAcknowledged: Bool
+    @Published var apnsStage: APNsTokenStage
+    @Published var backendStage: BackendStage
+    private var deviceToken: String?
 
     var onPreferencesChanged: (() -> Void)?
 
@@ -32,6 +39,21 @@ final class AppModel: ObservableObject {
         permissionText = "正在读取"
         statusNote = ""
         addressError = nil
+        userEnabledBackend = Self.storedBool(
+            defaults, key: AppStorageKeys.userEnabledBackend, defaultValue: false
+        )
+        backendMarkedCompatible = Self.storedBool(
+            defaults, key: AppStorageKeys.backendMarkedCompatible, defaultValue: false
+        )
+        userEnabledAPNs = Self.storedBool(
+            defaults, key: AppStorageKeys.userEnabledAPNs, defaultValue: false
+        )
+        signingAcknowledged = Self.storedBool(
+            defaults, key: AppStorageKeys.signingAcknowledged, defaultValue: false
+        )
+        apnsStage = .notRequested
+        backendStage = .notRequested
+        deviceToken = nil
     }
 
     /// Reads only this app's own key slot. Legacy iOS keys are never consulted.
@@ -44,8 +66,23 @@ final class AppModel: ObservableObject {
         ])
     }
 
-    var capability: CapabilityStatement {
-        CapabilityStatement(serverAddress: serverAddress, notificationPermission: permissionText)
+    var stages: DeliveryStages {
+        DeliveryStages(
+            permissionName: permissionText,
+            apns: apnsStage,
+            backend: backendStage,
+            delivery: .notObserved
+        )
+    }
+
+    var registrationInput: RegistrationGate.Input {
+        RegistrationGate.Input(
+            serverAddress: serverAddress,
+            userEnabled: userEnabledBackend,
+            backendMarkedCompatible: backendMarkedCompatible,
+            macKey: independentKey,
+            deviceToken: deviceToken
+        )
     }
 
     var registration: RegistrationDecision {
@@ -90,6 +127,92 @@ final class AppModel: ObservableObject {
     }
 
     /// Restores the Dock icon without re-entering the preference callback.
+    func setUserEnabledBackend(_ value: Bool) {
+        userEnabledBackend = value
+        defaults.set(value, forKey: AppStorageKeys.userEnabledBackend)
+        if !value, case .blocked = backendStage {
+            backendStage = .notRequested
+        }
+    }
+
+    func setBackendMarkedCompatible(_ value: Bool) {
+        backendMarkedCompatible = value
+        defaults.set(value, forKey: AppStorageKeys.backendMarkedCompatible)
+    }
+
+    func setUserEnabledAPNs(_ value: Bool) {
+        userEnabledAPNs = value
+        defaults.set(value, forKey: AppStorageKeys.userEnabledAPNs)
+        if !value {
+            apnsStage = .notRequested
+        }
+    }
+
+    func setSigningAcknowledged(_ value: Bool) {
+        signingAcknowledged = value
+        defaults.set(value, forKey: AppStorageKeys.signingAcknowledged)
+    }
+
+    /// Explicit only. Launch does not call this.
+    func requestAPNsToken() {
+        let outcome = APNsTokenClient.requestIfAllowed(
+            userEnabled: userEnabledAPNs,
+            signingAcknowledged: signingAcknowledged
+        )
+        switch outcome {
+        case .notRequested:
+            apnsStage = .notRequested
+        case .blockedUnsigned:
+            apnsStage = .blockedUnsigned
+        case .allowed:
+            apnsStage = .requested
+        }
+    }
+
+    func noteAPNsToken(_ token: String) {
+        let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            return
+        }
+        deviceToken = trimmed
+        apnsStage = .receivedHidden
+    }
+
+    func noteAPNsFailure() {
+        deviceToken = nil
+        apnsStage = .failed("系统没有返回 token。后端注册没有发送。")
+    }
+
+    /// Explicit only. Sends only when RegistrationGate allows it.
+    func runBackendRegistration() {
+        let outcome = RegistrationAttempt.perform(registrationInput) { request in
+            self.backendStage = .waiting
+            LiveBarkRegisterTransport.send(request) { result in
+                DispatchQueue.main.async {
+                    self.finishRegistration(result)
+                }
+            }
+        }
+        if case .allowed = outcome {
+            return
+        }
+        backendStage = .blocked(RegistrationGate.blockReason(outcome))
+    }
+
+    private func finishRegistration(_ result: Result<Data, Error>) {
+        switch result {
+        case let .success(data):
+            guard let key = RegistrationResponse.macKey(from: data, legacyValues: []) else {
+                backendStage = .failed("响应里没有可用的新 Mac key。没有写入任何 key。")
+                return
+            }
+            defaults.set(key, forKey: KeyIsolation.independentKeyDefaultsKey)
+            backendStage = .accepted
+        case .failure:
+            backendStage = .failed("网络请求失败。不表示服务端已投递。")
+        }
+    }
+
     func revertDockIconVisible(note: String) {
         statusNote = note
         guard !showDockIcon else {

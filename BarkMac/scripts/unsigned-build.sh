@@ -6,8 +6,17 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 
-if grep -RInE 'URLSession|registerForRemoteNotifications|URLRequest\(' BarkMac/App BarkMac/Sources; then
-  echo "v1 must not construct network requests" >&2
+if grep -RInE 'URLSession|registerForRemoteNotifications\(|URLRequest\(' \
+  BarkMac/App BarkMac/Sources \
+  --exclude=APNsTokenClient.swift \
+  --exclude=LiveBarkRegisterTransport.swift
+then
+  echo "network and APNs calls must stay inside the gated clients" >&2
+  exit 1
+fi
+
+if grep -nE 'registerForRemoteNotifications\(|URLSession' BarkMac/App/AppDelegate.swift; then
+  echo "launch delegate must not request a token or open a session" >&2
   exit 1
 fi
 

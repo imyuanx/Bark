@@ -44,22 +44,27 @@ def main() -> None:
 
     compiled = {
         "App": [
+            "APNsTokenClient.swift",
             "AppDelegate.swift",
             "AppModel.swift",
+            "LiveBarkRegisterTransport.swift",
+            "MacNotificationSDKProbe.swift",
             "MainWindowView.swift",
             "SettingsWindowView.swift",
             "StatusMenuController.swift",
             "WindowPresenter.swift",
         ],
         "Core": [
+            "APNsTokenPolicy.swift",
             "AddressDraft.swift",
             "AppStorageKeys.swift",
-            "CapabilityStatement.swift",
+            "DeliveryStages.swift",
             "DockPolicy.swift",
             "KeyIsolation.swift",
             "NotificationPermissionCopy.swift",
             "PrivacySummary.swift",
             "PushLink.swift",
+            "RegistrationGate.swift",
             "RegistrationPolicy.swift",
             "WindowPolicy.swift",
         ],
@@ -67,7 +72,7 @@ def main() -> None:
     uncompiled = {
         "App": ["Info.plist"],
         "Core": ["BarkHTTPShape.swift"],
-        "Signing": ["Local.xcconfig.example", "Push.entitlements.example"],
+        "Signing": ["Local.xcconfig.example", "Push.entitlements.example", "Unsigned.xcconfig"],
         "Root": ["Package.swift", "README.md"],
     }
 
@@ -105,6 +110,8 @@ def main() -> None:
     }
 
     def kind_for(name: str) -> str:
+        if name.endswith(".xcconfig"):
+            return "text.xcconfig"
         if name.endswith(".xcconfig.example") or name.endswith(".entitlements.example"):
             return "text"
         return kinds[Path(name).suffix]
@@ -146,11 +153,6 @@ def main() -> None:
     )
 
     target_settings = """
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
-				CODE_SIGN_STYLE = Manual;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_HARDENED_RUNTIME = NO;
@@ -161,7 +163,6 @@ def main() -> None:
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = local.barkmac.unsigned;
 				PRODUCT_NAME = BarkMac;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -350,12 +351,14 @@ def main() -> None:
 		}};
 		{debug_target} /* Debug */ = {{
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = {file_refs[("Signing", "Unsigned.xcconfig")]} /* Unsigned.xcconfig */;
 			buildSettings = {{
 {target_settings}			}};
 			name = Debug;
 		}};
 		{release_target} /* Release */ = {{
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = {file_refs[("Signing", "Unsigned.xcconfig")]} /* Unsigned.xcconfig */;
 			buildSettings = {{
 {target_settings}			}};
 			name = Release;

@@ -34,6 +34,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         windows?.showMain()
     }
 
+    func application(
+        _ application: NSApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        let hex = deviceToken.map { String(format: "%02x", $0) }.joined()
+        model.noteAPNsToken(hex)
+    }
+
+    func application(_ application: NSApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        _ = error
+        model.noteAPNsFailure()
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         WindowPolicy.terminateAfterLastWindowClosed(stayResident: model.stayResident)
     }

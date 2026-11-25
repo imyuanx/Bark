@@ -19,7 +19,7 @@ final class PolicyTests: XCTestCase {
             XCTAssertFalse(decision.statusLine.contains("已连接"), decision.statusLine)
             XCTAssertFalse(decision.statusLine.contains("已验证"), decision.statusLine)
         }
-        XCTAssertFalse(RegistrationPolicy.networkRegistrationEnabled)
+        XCTAssertFalse(RegistrationPolicy.launchesRegistrationAutomatically)
         XCTAssertEqual(RegistrationPolicy.decision(forAddress: "").block, .emptyAddress)
         XCTAssertEqual(RegistrationPolicy.decision(forAddress: "https://api.day.app").block, .officialServer)
         XCTAssertEqual(RegistrationPolicy.decision(forAddress: "https://bark.example").block, .macosDeviceTypeNotAccepted)
@@ -38,15 +38,20 @@ final class PolicyTests: XCTestCase {
         } else {
             XCTFail("file URL must be rejected")
         }
-        let saved = CapabilityStatement(serverAddress: "https://bark.example", notificationPermission: "已允许")
-        XCTAssertFalse(saved.connected)
-        XCTAssertFalse(saved.verified)
-        XCTAssertFalse(saved.apnsReady)
-        XCTAssertEqual(saved.serverLine, "服务器：已保存地址，未注册，未连接，未验证")
-        let empty = CapabilityStatement(serverAddress: "", notificationPermission: "未询问")
-        XCTAssertEqual(empty.serverLine, "服务器：未配置")
-        XCTAssertFalse(CapabilityStatement.apnsLine.contains("已向 APNs 注册"))
-        XCTAssertTrue(CapabilityStatement.apnsLine.contains("未向 APNs 注册"))
+        let saved = DeliveryStages(
+            permissionName: "已允许",
+            apns: .notRequested,
+            backend: .notRequested,
+            delivery: .notObserved
+        )
+        XCTAssertFalse(saved.claimsConnected)
+        XCTAssertFalse(saved.claimsDelivered)
+        XCTAssertTrue(saved.permissionLine.contains("只表示本机授权"))
+        XCTAssertTrue(saved.apnsLine.contains("未请求"))
+        XCTAssertTrue(saved.backendLine.contains("没有发送 /register"))
+        XCTAssertTrue(saved.deliveryLine.contains("未观察"))
+        XCTAssertFalse(saved.apnsLine.contains("已连接"))
+        XCTAssertFalse(saved.deliveryLine.contains("已送达"))
     }
 
     func testLegacyKeysAreNotImported() {
@@ -127,6 +132,87 @@ final class PolicyTests: XCTestCase {
         XCTAssertNil(query["key"])
         let withKey = BarkHTTPShape.registerQuery(deviceToken: "abc", existingKey: "own-key")
         XCTAssertEqual(withKey["key"], "own-key")
-        XCTAssertFalse(RegistrationPolicy.networkRegistrationEnabled)
+        XCTAssertFalse(RegistrationPolicy.launchesRegistrationAutomatically)
+    }
+
+    func testDefaultGatesDoNotSend() {
+        var calls = 0
+        let outcome = RegistrationAttempt.perform(
+            RegistrationGate.Input(
+                serverAddress: "https://bark.example",
+                userEnabled: false,
+                backendMarkedCompatible: false,
+                macKey: nil,
+                deviceToken: nil
+            )
+        ) { _ in
+            calls += 1
+        }
+        XCTAssertEqual(outcome, .blockedDisabled)
+        XCTAssertEqual(calls, 0)
+        XCTAssertEqual(
+            APNsTokenPolicy.evaluate(APNsTokenPolicy.Input(userEnabled: false, signingAcknowledged: false)),
+            .notRequested
+        )
+    }
+
+    func testOfficialServerStaysBlockedWhenEnabled() {
+        var calls = 0
+        let outcome = RegistrationAttempt.perform(
+            RegistrationGate.Input(
+                serverAddress: "https://api.day.app",
+                userEnabled: true,
+                backendMarkedCompatible: true,
+                macKey: "fresh-mac-key",
+                deviceToken: "abc"
+            )
+        ) { _ in
+            calls += 1
+        }
+        XCTAssertEqual(outcome, .blockedOfficialServer)
+        XCTAssertEqual(calls, 0)
+    }
+
+    func testAllowedRequestOmitsLegacyKeyAndCreatesANewMacKey() {
+        var sent: RegistrationRequest?
+        let outcome = RegistrationAttempt.perform(
+            RegistrationGate.Input(
+                serverAddress: "https://bark.example/",
+                userEnabled: true,
+                backendMarkedCompatible: true,
+                macKey: nil,
+                deviceToken: "abc"
+            )
+        ) { request in
+            sent = request
+        }
+        guard case .allowed = outcome else {
+            return XCTFail("expected an allowed request")
+        }
+        XCTAssertEqual(sent?.query["device_type"], "macos")
+        XCTAssertEqual(sent?.query["devicetoken"], "abc")
+        XCTAssertNil(sent?.query["key"])
+        XCTAssertEqual(sent?.url.absoluteString, "https://bark.example/register")
+        XCTAssertNil(MacKeyStore.keyFromRegistration("ios-key", legacyValues: ["ios-key"]))
+        let data = Data("{\"data\":{\"key\":\"new-mac-key\"}}".utf8)
+        XCTAssertEqual(RegistrationResponse.macKey(from: data, legacyValues: ["ios-key"]), "new-mac-key")
+        XCTAssertNil(RegistrationResponse.macKey(from: data, legacyValues: ["new-mac-key"]))
+    }
+
+    func testCompatibleBackendStillNeedsAToken() {
+        let outcome = RegistrationGate.evaluate(
+            RegistrationGate.Input(
+                serverAddress: "https://bark.example",
+                userEnabled: true,
+                backendMarkedCompatible: true,
+                macKey: "own-key",
+                deviceToken: "  "
+            )
+        )
+        XCTAssertEqual(outcome, .blockedNoDeviceToken)
+        let apns = APNsTokenPolicy.evaluate(
+            APNsTokenPolicy.Input(userEnabled: true, signingAcknowledged: false)
+        )
+        XCTAssertEqual(apns, .blockedUnsigned)
     }
 }

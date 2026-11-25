@@ -46,10 +46,11 @@ final class StatusMenuController: NSObject, NSMenuDelegate {
         menu.removeAllItems()
         addDisabled("Bark Mac")
         menu.addItem(.separator())
-        addDisabled(NotificationPermissionCopy.permissionLine(statusName: model.permissionText))
-        addDisabled(model.capability.serverLine)
+        addDisabled(model.stages.permissionLine)
+        addDisabled(model.stages.apnsLine)
+        addDisabled(model.stages.backendLine)
+        addDisabled(model.stages.deliveryLine)
         addDisabled(model.registration.statusLine)
-        addDisabled(CapabilityStatement.apnsLine)
         if let latest = LocalHistory.latest() {
             addDisabled(PrivacySummary.menuLine(
                 title: latest.title,

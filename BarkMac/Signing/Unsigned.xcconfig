@@ -1,0 +1,12 @@
+// Defaults keep the checked-in target unsigned. A later include can override
+// them. CI does not have Local.xcconfig, and the workflow also passes
+// CODE_SIGNING_ALLOWED=NO on the xcodebuild command line.
+CODE_SIGN_STYLE = Manual
+CODE_SIGN_IDENTITY = -
+CODE_SIGNING_ALLOWED = NO
+CODE_SIGNING_REQUIRED = NO
+CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO
+ENABLE_HARDENED_RUNTIME = NO
+PRODUCT_BUNDLE_IDENTIFIER = local.barkmac.unsigned
+
+#include? "Local.xcconfig"

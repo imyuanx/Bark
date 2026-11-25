@@ -2,13 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!--
-	  Example only. BarkMac.xcodeproj does not reference this file.
-	  Create the App ID and the Push capability on your own team, then
-	  set CODE_SIGN_ENTITLEMENTS after the app is actually being signed.
-	  Do not reuse the iOS app group. Critical alerts need a separate
-	  approval from Apple and are intentionally absent.
-	-->
 	<key>aps-environment</key>
 	<string>development</string>
 </dict>

@@ -11,30 +11,51 @@ English summary: this is an unsigned AppKit + SwiftUI menu-bar app. It does not 
 - 关闭最后一扇窗口后默认继续运行。设置里可以改成关闭窗口即退出。
 - Dock 图标默认显示，可以关掉。关掉之后激活策略是辅助程序（没有 Dock 图标），菜单栏图标仍能打开窗口。菜单栏图标若没有创建出来，会把 Dock 图标改回显示。
 - 服务器地址只保存在本机 `UserDefaults`。保存不发起网络请求。
-- 状态只用这些说法：未配置、未注册、未连接、未验证、未向 APNs 注册。通知权限来自系统的 `UNAuthorizationStatus`。允许通知不会被写成“推送可用”。
+- 菜单把系统通知权限、APNs token、后端注册、服务端投递分成四行。默认分别是未询问或正在读取、未请求、未请求、未观察。
 
 ## 首版没有什么
 
-- 不向 `api.day.app` 或任何其他服务器发送 `/register`，启动时也不自动注册。
-- 不调用 `registerForRemoteNotifications`，没有 device token。
-- 不读取、不迁移 iOS 的 key 或服务器列表。本应用自己的 key 槽位 `barkmac.independentDeviceKey` 只定义了读取规则，界面不会写入。
+- 启动时不向 `api.day.app` 或任何其他服务器发送 `/register`，也不调用 `registerForRemoteNotifications`。
+- 四个开关默认关闭。只有用户同时打开“自己的签名”“向 APNs 要 token”，才会调用 `NSApplication.registerForRemoteNotifications`。只有用户再打开“隔离后端”和“允许注册”，并且地址不是官方服务器、已经有本机 token，才会发送 `/register`。
+- 不读取、不迁移 iOS 的 key。没有本机 Mac key 时，注册请求不带 `key`。响应里的 key 如果和已知旧 key 相同，不会写入。
 - 没有消息历史数据。`LocalHistory.latest()` 固定返回空。
-- 没有 Notification Service Extension，因此不能在通知展示前解密，也不能承诺后台收到远程通知就写入历史。
+- 没有安装 Notification Service Extension，因此不能承诺系统会在展示前解密，也不能承诺后台收到远程通知就写入历史。
 - 没有自定义通知声音、30 秒来电铃声、通信通知头像、关键通知。
-- 没有改 `Finb/bark-server`。现有服务端只接受 `device_type` 为 `ios` 或 `watchos`，topic 也是固定的 iOS / watch bundle。`device_type=macos` 还没有服务端。
+- 没有改现有自建服务，也没有另建服务仓库。现有 bark-server 只接受 `device_type` 为 `ios` 或 `watchos`。
+
+## 四个阶段
+
+界面把下面四件事分开。前一件成功不会把后一件标成完成。
+
+1. 系统通知权限：`UNUserNotificationCenter` 的授权。只表示本机能不能显示通知。
+2. APNs token：`NSApplication.registerForRemoteNotifications` 的回调。默认不调用。token 不显示在菜单里。
+3. 后端注册：`GET /register`。默认不发送。官方主机 `api.day.app` 即使开关打开也会拒绝。
+4. 服务端投递：这个客户端观察不到。状态保持“未观察”，不能标成已送达。
+
+## 通知扩展的 SDK 结论
+
+[UNNotificationServiceExtension](https://developer.apple.com/documentation/usernotifications/unnotificationserviceextension) 的可用性写明 macOS 10.14+。同一页写明系统只在通知会显示 alert，且 `aps.mutable-content` 为 `1` 时调用 `didReceive`。这是符号文档，不是另一篇 iOS 操作指南。
+
+[Registering your app with APNs](https://developer.apple.com/documentation/usernotifications/registering-your-app-with-apns) 写明 macOS 使用 `NSApplication.registerForRemoteNotifications()`，并在回调里拿 token。Push capability 在 macOS 上加入的是 APS Environment (macOS) entitlement。
+
+`BarkMac/App/MacNotificationSDKProbe.swift` 在原生 macOS target 里子类化这个扩展类，用来让无签名编译证明 SDK 接受它。它不是已安装的 appex。编译成功只证明类存在，不证明系统会启动扩展，也不证明能解密或归档。
+
+## 将来隔离后端的最小适配
+
+现有自建服务保持不动。将来如果另做一台只服务这个 Mac bundle 的后端，最少要：
+
+- 接受 `device_type=macos`。没有 `key` 时发一个新 key，不要把请求写进已有的 iOS 或 watch 记录。
+- 有本机 Mac key 时只更新这一把 key 的 token。
+- APNs topic 等于这个 Mac app 的 bundle id，认证密钥属于签这个 app 的团队。
+- 推送 URL 仍是 `/{key}/{title}/{body}` 和现有 query。客户端不把 HTTP 成功当成已经投递。
 
 一次 HTTP 成功（将来如果有）也不表示 APNs 可用。本版没有任何成功请求可以展示。
 
-## 通知扩展为什么没做
+## 还不能当成已经会响的通知
 
-依据 Apple 文档，而不是把 iOS 扩展直接搬过来：
+符号文档把扩展类标成 macOS 可用，但本构建没有安装 appex，也没有收到过一条远程通知。静默通知、只有声音或角标的通知，按同一页的说明不会进入扩展。加密、自定义声音和通信通知头像仍然不做。
 
-- [`UNNotificationServiceExtension`](https://developer.apple.com/documentation/usernotifications/unnotificationserviceextension) 的可用性包含 macOS 10.14+ 和 Mac Catalyst 13.1+。类在 macOS SDK 里存在。
-- 同一页写明：系统只在通知会显示 alert，并且 `aps` 里 `mutable-content` 为 `1` 时调用扩展。不能改静默通知，也不能改只响铃或只改角标的通知。处理时间有限，超时就显示原始内容。
-- [Modifying content in newly delivered notifications](https://developer.apple.com/documentation/usernotifications/modifying-content-in-newly-delivered-notifications) 把这条路径写成 iOS 应用包、在 iOS 设备上于展示前修改内容。它没有给出原生 AppKit 应用已经验证可用的嵌入步骤。
-- 因此这里不添加 appex，也不把“后台收到的远程通知都会归档”写成已经实现。加密通知兼容延后到扩展的实际调用被证实之后。
-
-声音和通信通知同样先记限制、不做实现：
+声音和通信通知的限制：
 
 - [`UNNotificationSound`](https://developer.apple.com/documentation/usernotifications/unnotificationsound) 在 macOS 10.14+ 可用。自定义声音要已经在设备上，格式是 Linear PCM、MA4、µLaw 或 aLaw，封装为 aiff、wav 或 caf，短于 30 秒，否则改播默认音。查找位置是当前可执行文件的主 bundle，或应用容器 / App Group 容器的 `Library/Sounds`。iOS 那套扩展里临时下载再播放，依赖扩展真的被调用。
 - [Implementing communication notifications](https://developer.apple.com/documentation/usernotifications/implementing-communication-notifications) 要求打开 Communication Notifications 能力，并在收到通知的路径里（文档示例是 NSE）用 intent 更新内容。首版不打开这项能力，也不做每条通知的自定义头像。
@@ -55,13 +76,25 @@ GitHub Actions 工作流 `.github/workflows/macos-unsigned.yml` 在改到 `BarkM
 
 较新的 macOS 可能拒绝直接打开完全没有签名的 app。本地可以用 `codesign --force --deep --sign -` 对编出来的 `BarkMac.app` 做 ad-hoc 签名。那不是 Apple Developer 签名，没有 Push 能力，也不能当成已经能收推送。
 
-## 签名和 APNs 隔离
+## 签名
 
-- 工程里的 bundle id 是 `local.barkmac.unsigned`。不设置 `DEVELOPMENT_TEAM`，`CODE_SIGNING_ALLOWED` 为 `NO`。
-- `BarkMac/Signing/Local.xcconfig.example` 和 `Push.entitlements.example` 没有接到 target 上。要用你自己的 Apple Developer team 时，复制 xcconfig、换成你自己的 team 和 bundle id，再自己打开签名。不要复制 iOS / watch target 的 team、bundle id、描述文件或 match 仓库。
-- 云端 Mac 构建池因为 Cursor 侧没有 active team 而起不来。这只说明那次 pool 不可用，不能据此判断你有没有 Apple Developer Program 账号。
-- 推送要等三件事同时成立：你自己的 App ID 打开了 Push、描述文件签进这个 Mac bundle、以及一个接受 `device_type=macos` 并用这个 bundle 作为 APNs topic 的隔离后端。官方服务器和未改过的自建 bark-server 目前做不到。在那之前，客户端保持注册关闭。
-- 不要把官方 APNs auth key 放进这个仓库或这台构建机器。
+未签名配置在 `BarkMac/Signing/Unsigned.xcconfig`，target 通过它编译。占位符是 `YOUR_TEAM_ID` 和 `REPLACE_WITH_YOUR_MAC_BUNDLE_ID`，都不是真实账号。
+
+本地要签名时，把 `Local.xcconfig.example` 复制成 `Local.xcconfig`，把 `Push.entitlements.example` 复制成 `Push.entitlements`，两份都已被 gitignore。然后运行：
+
+```bash
+bash BarkMac/scripts/signed-build.sh
+```
+
+脚本会拒绝占位符，也会拒绝 bundle id 或 Team ID 已经出现在 iOS / watch 工程里的情况。它不打印 Team ID。CI 不运行这个脚本。
+
+## 下一步只需要的账号信息
+
+还不能代替你在开发者网站上的操作。不要把密码、证书或 APNs 私钥发到仓库或对话里。
+
+可以提供的非秘密标识只有两个：10 位 Team ID，以及你新建的 Mac bundle id。没有这两项时，工程继续用占位符和无签名编译。
+
+需要你另行批准才会做的账号动作：新建一个 Mac App ID、给它打开 Push、在你自己的团队里创建一把 APNs 认证密钥。密钥只放在将来的隔离后端上。
 
 ## 回滚
 
@@ -71,4 +104,4 @@ GitHub Actions 工作流 `.github/workflows/macos-unsigned.yml` 在改到 `BarkM
 
 ## 测试记录
 
-写这份说明时，当前环境没有 Swift，也没有 Xcode，所以这里不能宣称逻辑测试或 Mac 编译已经通过。无签名编译和 `BarkMacCore` 测试以 GitHub Actions 工作流 `macOS unsigned` 的结果为准，写在 pull request 里。没有在 Mac 上打开过界面，也没有发过注册或推送。Linux 上的检查不是 Mac 构建。
+`89bb6b9` 的 `macos-15-intel` 无签名编译和 9 个逻辑测试已经通过，见 PR。这次改动之后要以新的 `macOS unsigned` 运行结果为准。没有在 Mac 上打开过界面，也没有发过注册或推送。Linux 上的检查不是 Mac 构建。
