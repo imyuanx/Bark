@@ -49,9 +49,9 @@ final class PolicyTests: XCTestCase {
         XCTAssertTrue(saved.permissionLine.contains("只表示本机授权"))
         XCTAssertTrue(saved.apnsLine.contains("未请求"))
         XCTAssertTrue(saved.backendLine.contains("没有发送 /register"))
-        XCTAssertTrue(saved.deliveryLine.contains("未观察"))
+        XCTAssertTrue(saved.deliveryLine.hasPrefix("服务端投递：未观察"))
         XCTAssertFalse(saved.apnsLine.contains("已连接"))
-        XCTAssertFalse(saved.deliveryLine.contains("已送达"))
+        XCTAssertFalse(saved.deliveryLine.contains("投递成功"))
     }
 
     func testLegacyKeysAreNotImported() {
