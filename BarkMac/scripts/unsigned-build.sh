@@ -32,13 +32,38 @@ then
   exit 1
 fi
 
+if grep -RInE '^DEVELOPMENT_TEAM = [A-Z0-9]{10}( |;)' \
+  BarkMac/Signing BarkMac/BarkMac.xcodeproj
+then
+  echo "a real Team ID must not be committed" >&2
+  exit 1
+fi
+
 swift test --package-path BarkMac
+derived="BarkMac/build"
+rm -rf "$derived"
 xcodebuild \
   -project BarkMac/BarkMac.xcodeproj \
   -scheme BarkMac \
   -destination 'platform=macOS' \
   -configuration Debug \
+  -derivedDataPath "$derived" \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGN_IDENTITY=- \
   build
+
+app="$derived/Build/Products/Debug/BarkMac.app"
+stage="$derived/unsigned-package"
+rm -rf "$stage"
+mkdir -p "$stage"
+cp -R "$app" "$stage/BarkMac.app"
+cat > "$stage/UNSIGNED.txt" <<'EOF'
+Bark Mac unsigned build.
+Bundle id: local.barkmac.unsigned
+This app is not signed and has no Apple Developer credentials.
+Do not install it over an existing Bark app.
+EOF
+rm -f "$derived/BarkMac-unsigned-local.barkmac.unsigned.zip"
+ditto -c -k --keepParent "$stage" "$derived/BarkMac-unsigned-local.barkmac.unsigned.zip"
+echo "Unsigned package: $derived/BarkMac-unsigned-local.barkmac.unsigned.zip"

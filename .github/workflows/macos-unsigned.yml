@@ -36,3 +36,10 @@ jobs:
 
       - name: Test and build without signing
         run: bash BarkMac/scripts/unsigned-build.sh
+
+      - name: Upload unsigned package
+        uses: actions/upload-artifact@v4
+        with:
+          name: BarkMac-unsigned-local.barkmac.unsigned
+          path: BarkMac/build/BarkMac-unsigned-local.barkmac.unsigned.zip
+          if-no-files-found: error

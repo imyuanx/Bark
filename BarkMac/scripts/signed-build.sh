@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Local signed build. Not used by CI. Refuses the bundle ids and team ids
-# already written on the iOS or watch targets, without copying those values
-# into this script.
+# Local signed build. Not used by CI.
+# Does not contact Apple: -allowProvisioningUpdates and
+# -allowProvisioningDeviceRegistration are rejected.
+# Refuses until BARK_MAC_ALLOW_SIGNING=1, and refuses bundle ids or team ids
+# already written on the iOS or watch targets.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -9,8 +11,23 @@ cd "$root"
 local_config="BarkMac/Signing/Local.xcconfig"
 ios_project="Bark.xcodeproj/project.pbxproj"
 
+if [ "${BARK_MAC_ALLOW_SIGNING:-}" != "1" ]; then
+  echo "Refusing to sign. No Apple account is contacted." >&2
+  echo "Unsigned package: bash BarkMac/scripts/unsigned-build.sh" >&2
+  exit 1
+fi
+
 if [ ! -f "$local_config" ]; then
   echo "Copy BarkMac/Signing/Local.xcconfig.example to Local.xcconfig and replace the placeholders." >&2
+  exit 1
+fi
+
+if grep -q 'allowProvisioningUpdates\|allowProvisioningDeviceRegistration' "$local_config"; then
+  echo "Local.xcconfig must not request provisioning updates." >&2
+  exit 1
+fi
+if grep -q 'CODE_SIGN_STYLE = Automatic' "$local_config"; then
+  echo "Automatic signing can register a bundle id from the Xcode app. Use Manual." >&2
   exit 1
 fi
 
@@ -34,7 +51,7 @@ if grep -q "DEVELOPMENT_TEAM = ${team};" "$ios_project"; then
   exit 1
 fi
 
-echo "Signing with your Local.xcconfig. This script does not print the Team ID."
+echo "Manual sign requested. This command does not pass -allowProvisioningUpdates."
 xcodebuild \
   -project BarkMac/BarkMac.xcodeproj \
   -scheme BarkMac \

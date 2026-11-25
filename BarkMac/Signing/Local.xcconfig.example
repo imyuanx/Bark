@@ -1,17 +1,17 @@
 // Copy to Local.xcconfig. That file is gitignored. Do not commit it.
-// Replace every placeholder. Do not paste a private key, certificate, or password.
+// Replace the placeholders locally. Do not paste a private key, certificate, or password.
 //
-// DEVELOPMENT_TEAM is the 10-character Team ID from your own Apple Developer
-// account. PRODUCT_BUNDLE_IDENTIFIER must be a new macOS App ID you create.
-// It must not be the bundle id of the existing iOS or watch target.
-//
-// CODE_SIGN_ENTITLEMENTS points at a copy of Push.entitlements.example
-// named Push.entitlements, also gitignored, after you enable Push for that
-// new App ID. Leave the line commented until that profile exists.
+// Leave signing disabled until portal changes are approved. Xcode's app, with
+// Automatically manage signing and a signed-in Apple account, registers a
+// missing bundle id and creates a development profile when you build.
+// xcodebuild creates App IDs, profiles, or certificates only when it is
+// passed -allowProvisioningUpdates. BarkMac/scripts/signed-build.sh never
+// passes that flag.
 
-CODE_SIGNING_ALLOWED = YES
-CODE_SIGN_STYLE = Automatic
-CODE_SIGNING_REQUIRED = YES
+CODE_SIGNING_ALLOWED = NO
+CODE_SIGN_STYLE = Manual
+CODE_SIGNING_REQUIRED = NO
+CODE_SIGN_IDENTITY = -
 DEVELOPMENT_TEAM = YOUR_TEAM_ID
 PRODUCT_BUNDLE_IDENTIFIER = REPLACE_WITH_YOUR_MAC_BUNDLE_ID
 // CODE_SIGN_ENTITLEMENTS = Signing/Push.entitlements

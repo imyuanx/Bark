@@ -78,23 +78,19 @@ GitHub Actions 工作流 `.github/workflows/macos-unsigned.yml` 在改到 `BarkM
 
 ## 签名
 
-未签名配置在 `BarkMac/Signing/Unsigned.xcconfig`，target 通过它编译。占位符是 `YOUR_TEAM_ID` 和 `REPLACE_WITH_YOUR_MAC_BUNDLE_ID`，都不是真实账号。
+未签名配置在 `BarkMac/Signing/Unsigned.xcconfig`，bundle id 仍是 `local.barkmac.unsigned`。占位符是 `YOUR_TEAM_ID` 和 `REPLACE_WITH_YOUR_MAC_BUNDLE_ID`。真实 Team ID 只放在 gitignore 的 `Local.xcconfig` 里，不提交。
 
-本地要签名时，把 `Local.xcconfig.example` 复制成 `Local.xcconfig`，把 `Push.entitlements.example` 复制成 `Push.entitlements`，两份都已被 gitignore。然后运行：
+候选 bundle id 是 `me.yuanx.BarkMac`。它还没有在 Apple 注册，本仓库也没有向 Apple 查过它是否已经存在。写入门户之前必须先查重。无签名产物不用这个 id。
 
 ```bash
-bash BarkMac/scripts/signed-build.sh
+bash BarkMac/scripts/unsigned-build.sh
 ```
 
-脚本会拒绝占位符，也会拒绝 bundle id 或 Team ID 已经出现在 iOS / watch 工程里的情况。它不打印 Team ID。CI 不运行这个脚本。
+脚本编出 `BarkMac/build/BarkMac-unsigned-local.barkmac.unsigned.zip`，里面有 `UNSIGNED.txt`。CI 上传同名 artifact。没有凭据。
 
-## 下一步只需要的账号信息
+`xcodebuild` 只有带 `-allowProvisioningUpdates` 时才会向 Apple 创建或更新 App ID、描述文件和证书。`signed-build.sh` 不传这个参数，也不传 `-allowProvisioningDeviceRegistration`，并且在 `BARK_MAC_ALLOW_SIGNING=1` 之前直接拒绝。Xcode 图形界面如果打开 Automatically manage signing 且已经登录账号，构建时仍可能注册 bundle id。示例配置因此使用 Manual，并且 `CODE_SIGNING_ALLOWED = NO`。
 
-还不能代替你在开发者网站上的操作。不要把密码、证书或 APNs 私钥发到仓库或对话里。
-
-可以提供的非秘密标识只有两个：10 位 Team ID，以及你新建的 Mac bundle id。没有这两项时，工程继续用占位符和无签名编译。
-
-需要你另行批准才会做的账号动作：新建一个 Mac App ID、给它打开 Push、在你自己的团队里创建一把 APNs 认证密钥。密钥只放在将来的隔离后端上。
+本地签名最少需要：你自己的 10 位 Team ID，以及查重之后的新 bundle id。证书留在本机钥匙串。不要提供密码或私钥。
 
 ## 回滚
 
@@ -104,4 +100,4 @@ bash BarkMac/scripts/signed-build.sh
 
 ## 测试记录
 
-`89bb6b9` 的 `macos-15-intel` 无签名编译和 9 个逻辑测试已经通过，见 PR。这次改动之后要以新的 `macOS unsigned` 运行结果为准。没有在 Mac 上打开过界面，也没有发过注册或推送。Linux 上的检查不是 Mac 构建。
+`72f1a46` 的 `macos-15-intel` 无签名编译和 13 个逻辑测试已经通过，见 PR。打包步骤加入后，以新的 `macOS unsigned` 运行结果为准。没有在 Mac 上打开过界面，也没有发过注册或推送。Linux 上的检查不是 Mac 构建。
